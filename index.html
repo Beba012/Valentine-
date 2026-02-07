@@ -37,13 +37,14 @@ button{
     cursor:pointer;
 }
 
-#yesBtn{
-    background:#28a745;
-    position:relative;
-}
+#yesBtn{background:#28a745; position:relative;}
+#noBtn{background:#dc3545;}
 
-#noBtn{
-    background:#dc3545;
+#loveScreen{
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
 }
 
 img{
@@ -66,20 +67,31 @@ canvas{
 
 <canvas id="canvas"></canvas>
 
-<h1>Will you be my Valentine? 💖</h1>
-<button id="yesBtn">YES</button>
-<button id="noBtn">NO</button>
+<div id="main">
+    <h1>Will you be my Valentine? 💖</h1>
+    <button id="yesBtn">YES</button>
+    <button id="noBtn">NO</button>
+</div>
+
+<div id="loveScreen">
+    <h1>I love you 🤍</h1>
+    <h2>Only yours</h2>
+    <p id="quote" style="font-size:1.5em;margin:20px;"></p>
+    <img src="IMG_6820.jpeg">
+</div>
 
 <script>
 const noBtn=document.getElementById("noBtn");
 const yesBtn=document.getElementById("yesBtn");
+const main=document.getElementById("main");
+const loveScreen=document.getElementById("loveScreen");
 const canvas=document.getElementById("canvas");
 const ctx=canvas.getContext("2d");
 
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
-// NO button runs away (touch + mouse)
+// NO runs away
 function moveNo(){
     noBtn.style.left=Math.random()*(window.innerWidth-100)+"px";
     noBtn.style.top=Math.random()*(window.innerHeight-50)+"px";
@@ -90,56 +102,41 @@ moveNo();
 
 const quotes=[
 "You are my today and all of my tomorrows.",
-"I’d choose you in every lifetime.",
 "My favorite place is next to you.",
+"I’d choose you in every lifetime.",
 "You make my heart smile.",
-"You are my happy place.",
 "Forever wouldn’t be long enough with you.",
 "You are my greatest blessing.",
-"With you, life is beautiful.",
-"Loving you is my favorite thing to do.",
-"You are the best part of my life.",
-"Every moment with you feels like magic.",
-"My heart is happiest with you."
+"With you, life is beautiful."
 ];
 
-// YES button action
-yesBtn.onclick=()=>{
-    document.body.innerHTML=`
-    <canvas id="canvas"></canvas>
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;color:white;">
-        <h1 style="font-family:Pacifico,cursive;">I love you 🤍</h1>
-        <h2>Only yours</h2>
-        <p style="font-size:1.5em;margin:20px;">${quotes[Math.floor(Math.random()*quotes.length)]}</p>
-        <img src="IMG_6820.jpeg">
-    </div>`;
+// Heart explosion
+function heart(x,y,size,dy){
+    this.x=x; this.y=y; this.size=size; this.dy=dy;
+}
 
-    const c=document.getElementById("canvas");
-    const x=c.getContext("2d");
-    c.width=window.innerWidth;
-    c.height=window.innerHeight;
+function drawHeart(h){
+    ctx.beginPath();
+    ctx.moveTo(h.x,h.y);
+    ctx.bezierCurveTo(h.x-h.size,h.y-h.size,h.x-h.size*2,h.y+h.size,h.x,h.y+h.size*2);
+    ctx.bezierCurveTo(h.x+h.size*2,h.y+h.size,h.x+h.size,h.y-h.size,h.x,h.y);
+    ctx.fillStyle="pink";
+    ctx.fill();
+}
+
+yesBtn.onclick=()=>{
+    main.style.display="none";
+    loveScreen.style.display="flex";
+    document.getElementById("quote").innerText =
+        quotes[Math.floor(Math.random()*quotes.length)];
 
     let hearts=[];
-    for(let i=0;i<200;i++){
-        hearts.push({
-            x:Math.random()*c.width,
-            y:Math.random()*-c.height,
-            size:Math.random()*10+8,
-            dy:Math.random()*3+2
-        });
-    }
-
-    function drawHeart(h){
-        x.beginPath();
-        x.moveTo(h.x,h.y);
-        x.bezierCurveTo(h.x-h.size,h.y-h.size,h.x-h.size*2,h.y+h.size,h.x,h.y+h.size*2);
-        x.bezierCurveTo(h.x+h.size*2,h.y+h.size,h.x+h.size,h.y-h.size,h.x,h.y);
-        x.fillStyle="pink";
-        x.fill();
+    for(let i=0;i<220;i++){
+        hearts.push(new heart(Math.random()*canvas.width,-20,Math.random()*10+8,Math.random()*3+2));
     }
 
     function animate(){
-        x.clearRect(0,0,c.width,c.height);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
         hearts.forEach(h=>{
             h.y+=h.dy;
             drawHeart(h);

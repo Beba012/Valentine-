@@ -5,176 +5,150 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Be My Valentine?</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
 <style>
-    body {
-        margin: 0;
-        height: 100vh;
-        overflow: hidden;
-        font-family: Arial, Helvetica, sans-serif;
-        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        text-align: center;
-        color: white;
-    }
+body{
+    margin:0;
+    height:100vh;
+    overflow:hidden;
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    text-align:center;
+    color:white;
+}
 
-    h1 {
-        font-size: 2.8em;
-        margin-bottom: 30px;
-        z-index: 2;
-    }
+h1{
+    font-family:'Pacifico',cursive;
+    font-size:3em;
+    margin-bottom:20px;
+}
 
-    button {
-        padding: 15px 40px;
-        font-size: 24px;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        position: absolute;
-        transition: all 0.2s ease;
-        z-index: 2;
-    }
+button{
+    padding:15px 40px;
+    font-size:22px;
+    border:none;
+    border-radius:14px;
+    position:absolute;
+    cursor:pointer;
+}
 
-    #yesBtn {
-        background-color: #28a745;
-        color: white;
-        position: relative;
-    }
+#yesBtn{
+    background:#28a745;
+    position:relative;
+}
 
-    #noBtn {
-        background-color: #dc3545;
-        color: white;
-    }
+#noBtn{
+    background:#dc3545;
+}
 
-    #quote {
-        font-size: 1.6em;
-        max-width: 80%;
-        margin-top: 30px;
-        z-index: 2;
-    }
+img{
+    width:260px;
+    border-radius:20px;
+    margin-top:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
 
-    canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        pointer-events: none;
-        z-index: 1;
-    }
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+}
 </style>
 </head>
 
 <body>
 
-<canvas id="confetti"></canvas>
+<canvas id="canvas"></canvas>
 
-<h1 id="question">Will you be my Valentine? 💖</h1>
+<h1>Will you be my Valentine? 💖</h1>
 <button id="yesBtn">YES</button>
 <button id="noBtn">NO</button>
-<div id="quote"></div>
 
 <script>
-const noBtn = document.getElementById("noBtn");
-const yesBtn = document.getElementById("yesBtn");
-const canvas = document.getElementById("confetti");
-const ctx = canvas.getContext("2d");
+const noBtn=document.getElementById("noBtn");
+const yesBtn=document.getElementById("yesBtn");
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-// Move NO button
-function moveButton() {
-    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
+// NO button runs away (touch + mouse)
+function moveNo(){
+    noBtn.style.left=Math.random()*(window.innerWidth-100)+"px";
+    noBtn.style.top=Math.random()*(window.innerHeight-50)+"px";
 }
-noBtn.addEventListener("mouseover", moveButton);
-noBtn.addEventListener("click", moveButton);
-moveButton();
+noBtn.addEventListener("touchstart",moveNo);
+noBtn.addEventListener("mouseover",moveNo);
+moveNo();
 
-// Romantic quotes
-const quotes = [
-    "You are my today and all of my tomorrows.",
-    "Every love story is beautiful, but ours is my favorite.",
-    "I fall in love with you more every single day.",
-    "Forever wouldn’t be long enough with you.",
-    "You are the best thing that ever happened to me.",
-    "My favorite place in the world is next to you.",
-    "You make my heart smile.",
-    "Loving you is my favorite thing to do.",
-    "I’d choose you in every lifetime.",
-    "You are my greatest adventure.",
-    "With you, every moment is magic.",
-    "You are my happy place."
+const quotes=[
+"You are my today and all of my tomorrows.",
+"I’d choose you in every lifetime.",
+"My favorite place is next to you.",
+"You make my heart smile.",
+"You are my happy place.",
+"Forever wouldn’t be long enough with you.",
+"You are my greatest blessing.",
+"With you, life is beautiful.",
+"Loving you is my favorite thing to do.",
+"You are the best part of my life.",
+"Every moment with you feels like magic.",
+"My heart is happiest with you."
 ];
 
-// Heart confetti
-let hearts = [];
+// YES button action
+yesBtn.onclick=()=>{
+    document.body.innerHTML=`
+    <canvas id="canvas"></canvas>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;color:white;">
+        <h1 style="font-family:Pacifico,cursive;">I love you 🤍</h1>
+        <h2>Only yours</h2>
+        <p style="font-size:1.5em;margin:20px;">${quotes[Math.floor(Math.random()*quotes.length)]}</p>
+        <img src="IMG_6820.jpeg">
+    </div>`;
 
-function createHeart() {
-    return {
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height - canvas.height,
-        size: Math.random() * 20 + 10,
-        speed: Math.random() * 3 + 2
-    };
-}
+    const c=document.getElementById("canvas");
+    const x=c.getContext("2d");
+    c.width=window.innerWidth;
+    c.height=window.innerHeight;
 
-function drawHeart(x, y, size) {
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.bezierCurveTo(x - size/2, y - size/2, x - size, y + size/3, x, y + size);
-    ctx.bezierCurveTo(x + size, y + size/3, x + size/2, y - size/2, x, y);
-    ctx.fillStyle = "pink";
-    ctx.fill();
-}
-
-function animateHearts() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    hearts.forEach(h => {
-        h.y += h.speed;
-        drawHeart(h.x, h.y, h.size);
-    });
-    requestAnimationFrame(animateHearts);
-}
-
-yesBtn.addEventListener("click", () => {
-    document.body.innerHTML = `
-        <canvas id="confetti"></canvas>
-        <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;text-align:center;color:white;">
-            <h1>I love you 🤍</h1>
-            <h2>Only yours</h2>
-            <p style="font-size:1.6em;max-width:80%;margin-top:30px;">
-                ${quotes[Math.floor(Math.random() * quotes.length)]}
-            </p>
-        </div>
-    `;
-
-    const newCanvas = document.getElementById("confetti");
-    const newCtx = newCanvas.getContext("2d");
-    newCanvas.width = window.innerWidth;
-    newCanvas.height = window.innerHeight;
-
-    function burstHearts() {
-        for (let i = 0; i < 120; i++) {
-            hearts.push(createHeart());
-        }
+    let hearts=[];
+    for(let i=0;i<200;i++){
+        hearts.push({
+            x:Math.random()*c.width,
+            y:Math.random()*-c.height,
+            size:Math.random()*10+8,
+            dy:Math.random()*3+2
+        });
     }
 
-    function animate() {
-        newCtx.clearRect(0, 0, newCanvas.width, newCanvas.height);
-        hearts.forEach(h => {
-            h.y += h.speed;
-            drawHeart(h.x, h.y, h.size);
+    function drawHeart(h){
+        x.beginPath();
+        x.moveTo(h.x,h.y);
+        x.bezierCurveTo(h.x-h.size,h.y-h.size,h.x-h.size*2,h.y+h.size,h.x,h.y+h.size*2);
+        x.bezierCurveTo(h.x+h.size*2,h.y+h.size,h.x+h.size,h.y-h.size,h.x,h.y);
+        x.fillStyle="pink";
+        x.fill();
+    }
+
+    function animate(){
+        x.clearRect(0,0,c.width,c.height);
+        hearts.forEach(h=>{
+            h.y+=h.dy;
+            drawHeart(h);
         });
         requestAnimationFrame(animate);
     }
 
-    burstHearts();
     animate();
-});
+};
 </script>
 
 </body>

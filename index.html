@@ -23,6 +23,7 @@
     h1 {
         font-size: 2.8em;
         margin-bottom: 30px;
+        z-index: 2;
     }
 
     button {
@@ -33,6 +34,7 @@
         cursor: pointer;
         position: absolute;
         transition: all 0.2s ease;
+        z-index: 2;
     }
 
     #yesBtn {
@@ -47,64 +49,131 @@
     }
 
     #quote {
-        font-size: 1.8em;
+        font-size: 1.6em;
         max-width: 80%;
-        margin-top: 20px;
+        margin-top: 30px;
+        z-index: 2;
+    }
+
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 1;
     }
 </style>
 </head>
 
 <body>
 
-<h1 id="question">Will you be my Valentine? 💖</h1>
+<canvas id="confetti"></canvas>
 
+<h1 id="question">Will you be my Valentine? 💖</h1>
 <button id="yesBtn">YES</button>
 <button id="noBtn">NO</button>
-
 <div id="quote"></div>
 
 <script>
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
-const quoteDiv = document.getElementById("quote");
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
 
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// Move NO button
 function moveButton() {
     const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
     const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
 }
-
 noBtn.addEventListener("mouseover", moveButton);
 noBtn.addEventListener("click", moveButton);
 moveButton();
 
+// Romantic quotes
 const quotes = [
     "You are my today and all of my tomorrows.",
     "Every love story is beautiful, but ours is my favorite.",
     "I fall in love with you more every single day.",
     "Forever wouldn’t be long enough with you.",
-    "You are the best thing that ever happened to me."
+    "You are the best thing that ever happened to me.",
+    "My favorite place in the world is next to you.",
+    "You make my heart smile.",
+    "Loving you is my favorite thing to do.",
+    "I’d choose you in every lifetime.",
+    "You are my greatest adventure.",
+    "With you, every moment is magic.",
+    "You are my happy place."
 ];
+
+// Heart confetti
+let hearts = [];
+
+function createHeart() {
+    return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        size: Math.random() * 20 + 10,
+        speed: Math.random() * 3 + 2
+    };
+}
+
+function drawHeart(x, y, size) {
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.bezierCurveTo(x - size/2, y - size/2, x - size, y + size/3, x, y + size);
+    ctx.bezierCurveTo(x + size, y + size/3, x + size/2, y - size/2, x, y);
+    ctx.fillStyle = "pink";
+    ctx.fill();
+}
+
+function animateHearts() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hearts.forEach(h => {
+        h.y += h.speed;
+        drawHeart(h.x, h.y, h.size);
+    });
+    requestAnimationFrame(animateHearts);
+}
 
 yesBtn.addEventListener("click", () => {
     document.body.innerHTML = `
-        <div style="
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            text-align:center;
-            color:white;
-        ">
+        <canvas id="confetti"></canvas>
+        <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;text-align:center;color:white;">
             <h1>I love you 🤍</h1>
             <h2>Only yours</h2>
-            <p style="font-size:1.6em; max-width:80%; margin-top:30px;">
+            <p style="font-size:1.6em;max-width:80%;margin-top:30px;">
                 ${quotes[Math.floor(Math.random() * quotes.length)]}
             </p>
         </div>
     `;
+
+    const newCanvas = document.getElementById("confetti");
+    const newCtx = newCanvas.getContext("2d");
+    newCanvas.width = window.innerWidth;
+    newCanvas.height = window.innerHeight;
+
+    function burstHearts() {
+        for (let i = 0; i < 120; i++) {
+            hearts.push(createHeart());
+        }
+    }
+
+    function animate() {
+        newCtx.clearRect(0, 0, newCanvas.width, newCanvas.height);
+        hearts.forEach(h => {
+            h.y += h.speed;
+            drawHeart(h.x, h.y, h.size);
+        });
+        requestAnimationFrame(animate);
+    }
+
+    burstHearts();
+    animate();
 });
 </script>
 
